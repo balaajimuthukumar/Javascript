@@ -36,7 +36,6 @@ const closeDeleteMovieModal = () => {
 };
 
 const deleteMovie = (moviId) => {
-    console.log("testing inside the delete");
     let selectedMovieIndex = 0;
     for(const movi of movies){
         if(movi.id === moviId)
@@ -48,7 +47,7 @@ const deleteMovie = (moviId) => {
 
     //this method will remove the element in between the array elements
     //and shift the elements forward
-    movies.splice(selectedMovieIndex);
+    movies.splice(selectedMovieIndex,1);
     const listRoot = document.getElementById('movie-list');
     //the below expression can also be done by doing 
     //listRoot.removeChild(children[selectedMovieIndex]);
@@ -69,6 +68,7 @@ const deleteMovieHandler = (moviId) => {
     confirmDeletionButton.replaceWith(confirmDeletionButton.cloneNode(true));
     confirmDeletionButton = deleteMovieModal.querySelector('.btn--danger');
 
+    //confirmDeletionButton.removeEventListener('click', deleteMovie.bind(null, moviId));
     cancelDeletionButton.removeEventListener('click', closeDeleteMovieModal);
     
     cancelDeletionButton.addEventListener('click',closeDeleteMovieModal);
@@ -135,7 +135,7 @@ const addMovieHandler = () => {
     
     //movie object
     const newMovie = {
-        id:Math.random.toString(),
+        id: Math.random().toString(),
         title: titleValue,
         image: imageUrlValue,
         rating: ratingValue
