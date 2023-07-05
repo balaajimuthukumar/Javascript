@@ -1,96 +1,186 @@
-const addButton = document.getElementById('add-movie-btn');
-const srchButton = document.getElementById('search-btn');
+class Product {
+    constructor(title, image, desc, price) {
+      this.title = title;
+      this.imageUrl = image;
+      this.description = desc;
+      this.price = price;
+    }
+}
+  
+class ElementAttribute {
+    constructor(attrName, attrValue) {
+      this.name = attrName;
+      this.value = attrValue;
+    }
+}
+  
+class Component {
+    //separate component class created for the most commonly performed actions
+    constructor(renderHookId, shouldRender = true) {
+        this.hookId = renderHookId;
+        if (shouldRender) {
+            this.render();
+        }
+    }
+    //this method is crearted for the child classes to override
+    render() {
 
-const movies = [];
-
-const showMovie = (filter = '') => {
-    const movieList = document.getElementById('movie-list');
-
-    //remove visible class for the movie list element 
-    if (movies.length === 0) {
-        movieList.classList.remove('visible');
-        return;
-    } else {
-        movieList.classList.add('visible');
+    }
+  
+    createRootElement(tag, cssClasses, attributes) {
+        const rootElement = document.createElement(tag);
+        if (cssClasses) {
+            rootElement.className = cssClasses;
+        }
+        if (attributes && attributes.length > 0) {
+            for (const attr of attributes) {
+                rootElement.setAttribute(attr.name, attr.value);
+            }
+        }
+        document.getElementById(this.hookId).append(rootElement);
+        return rootElement;
     }
 
-    //doing this will rerender the entire element from scratch
-    //whenever a new element was added, this is just another approach for learning
-    //about the objects
-    movieList.innerHTML = '';
+}
+  
+class ShoppingCart extends Component {
+        items = [];
     
-    const filteredMovies = !filter ? movies : movies.filter(movie => movie.info.title.includes(filter));
-
-    filteredMovies.forEach(movie => {
-        const movieEl = document.createElement('li');
-        const { info, ...otherProps } = movie;
-        console.log(otherProps);
-
-        let { getFormattedTitle } = movie;
-        let text = getFormattedTitle.apply(movie) + ' - ';
-
-        for (const key in info) {
-            if (key !== 'title' && key !== '_title') {
-                text = text + `${key}: ${info[key]}`;
-            }
+        set cartItems(value) {
+            this.items = value;
+            this.totalOutput.innerHTML = `<h2>Total: \$${this.totalAmount.toFixed(2)}</h2>`;
         }
-        movieEl.textContent = text;
-        movieList.append(movieEl);
-    });
-};
+    
+        get totalAmount() {
+            const sum = this.items.reduce((prevValue, curItem) => prevValue + curItem.price,0);
+            return sum;
+        }
+    
+        constructor(renderHookId) {
+            super(renderHookId, false);
+            this.orderProducts = () => {
+                console.log('Ordering...');
+                console.log(this.items);
+            };
+            this.render();
+        }
+    
+        addProduct(product) {
+            const updatedItems = [...this.items];
+            updatedItems.push(product);
+            this.cartItems = updatedItems;
+        }
+  
+        render() {
+            const cartEl = this.createRootElement('section', 'cart');
+            cartEl.innerHTML = `
+                <h2>Total: \$${0}</h2>
+                <button>Order Now!</button>
+            `;
 
-const addMovie = () => {
-    const title = document.getElementById('title').value;
-    const extraName = document.getElementById('extra-name').value;
-    const extraValue = document.getElementById('extra-value').value;
+            const orderButton = cartEl.querySelector('button');
+            orderButton.addEventListener('click', this.orderProducts);
+            this.totalOutput = cartEl.querySelector('h2');
+        }
+}
+  
+class ProductItem extends Component {
 
-    if (extraName.trim() === '' || extraValue.trim() === ''){
-        return;
+    constructor(product, renderHookId) {
+      super(renderHookId, false);
+      this.product = product;
+      this.render();
     }
+  
+    addToCart() {
+      App.addProductToCart(this.product);
+    }
+  
+    render() {
+        const prodEl = this.createRootElement('li', 'product-item');
+        prodEl.innerHTML = `
+            <div>
+                <img src="${this.product.imageUrl}" alt="${this.product.title}" >
+                <div class="product-item__content">
+                <h2>${this.product.title}</h2>
+                <h3>\$${this.product.price}</h3>
+                <p>${this.product.description}</p>
+                <button>Add to Cart</button>
+                </div>
+            </div>
+            `;
 
-    const newMovie = {
-        info: {
-        //setter function 
-        set title(val) {
-            if (val.trim() === '') {
-                this._title = 'DEFAULT';
-                return;
-            }
+        const addCartButton = prodEl.querySelector('button');
+        addCartButton.addEventListener('click', this.addToCart.bind(this));
+    }
+}
+  
+class ProductList extends Component {
+    #products = [];//private property -> unlike '_' this is a strictly privagte property
+  
+    constructor(renderHookId) {
+      super(renderHookId, false);
+      this.render();
+      this.fetchProducts();
+    }
+  
+    fetchProducts() {
+      this.#products = [
+        new Product(
+          'A Pillow',
+          'https://www.maxpixel.net/static/photo/2x/Soft-Pillow-Green-Decoration-Deco-Snuggle-1241878.jpg',
+          'A soft pillow!',
+          19.99
+        ),
+        new Product(
+          'A Carpet',
+          'https://upload.wikimedia.org/wikipedia/commons/thumb/7/71/Ardabil_Carpet.jpg/397px-Ardabil_Carpet.jpg',
+          'A carpet which you might like - or not.',
+          89.99
+        )
+      ];
 
-            this._title = val;
-        },
-        //getter function
-        get title() {
-            return this._title;
-        },
-        [extraName]: extraValue
-        },
-        id: Math.random().toString(),
-        getFormattedTitle() {
-            return this.info.title.toUpperCase();
+      this.renderProducts();
+    }
+  
+    renderProducts() {
+      for (const prod of this.#products) {
+        new ProductItem(prod, 'prod-list');
+      }
+    }
+  
+    render() {
+        this.createRootElement('ul', 'product-list', [new ElementAttribute('id', 'prod-list')]);
+        if (this.#products && this.#products.length > 0) {
+            this.renderProducts();
         }
-    };
+    }
+}
+  
+class Shop {
 
-    newMovie.info.title = title;
+        constructor() {
+            this.render();
+        }
 
-    movies.push(newMovie);
-    showMovie();
-};
+        render() {
+            this.cart = new ShoppingCart('app');
+            new ProductList('app');
+        }
 
-const searchMovie = () => {
-    const filterTerm = document.getElementById('filter-title').value;
-    showMovie(filterTerm);
-};
-
-const addButtonHandler = () => {
-    //console.log("add button handler");
-    addMovie();
-};
-
-const searchButtonHandler = () => {
-    searchMovie();
-};
-
-
-addButton.addEventListener('click',addButtonHandler);
-srchButton.addEventListener('click',searchButtonHandler);
+}
+  
+class App {
+    static cart;
+  
+    static init() {
+      const shop = new Shop();
+      this.cart = shop.cart;
+    }
+  
+    static addProductToCart(product) {
+      this.cart.addProduct(product);
+    }
+}
+  
+  App.init();
