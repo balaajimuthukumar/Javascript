@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./src/styles/style.css">
+    <script src="
+    https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.9.1/math.js
+    " defer></script>
+    <script src="./src/scripts/app.js" defer></script>
+    <title>Document</title>
+</head>
+<body>
+    <div id="backdrop"></div>
+    <div class="main_container">
+        <header>
+            <img src="" alt="">
+            <input type="text" placeholder="Search over 1,000,000 recipes..." id="searchInp">
+            <input type="button" value="Search" id="searchRecipes">
+            <nav>
+                <ul class="nav_list">
+                    <a href="#" class="add_recipe"><li class="nav_list_link">Add Recipe</li></a>
+                    <a href="#" class="bookmark"><li class="nav_list_link">Book Marks</li></a>
+                </ul>
+            </nav>
+        </header>
+        <div class="bookmark_list_container">
+            <ul class="bookmarked">
+            </ul>
+            <div class="empty_bookmark">
+                <p>No bookmarks yet. Find a nice recipe and bookmark it ;&#41;</p>
+            </div>
+        </div>
+        <div class="container">
+            <div class="container_left"></div>
+            <div class="btn_pagination">
+                <button class="pagination_button" id="btnBackWard"></button>
+                <button class="pagination_button" id="btnForward"></button>
+            </div>          
+            <div class="container_right">
+                <div class="intial_text">
+                    Start by searching for a recipe or an ingredient. Have fun!
+                </div>
+            </div>
+        </div>
+        <form class="add_recipe_form">
+            <div class="add_recipe_modal">
+                    <div class="addrecipe_container">
+                        <h2>Recipes</h2>
+                        <label for="urlinp">Title</label>
+                        <input type="text" name="title" id="titleinp" required>
+                        <label for="urlinp">URL</label>
+                        <input type="text" name="source_url" id="urlinp" required>
+                        <label for="imageurlinp">Image URL</label>
+                        <input type="text" name="image_url" id="imageurlinp" required>
+                        <label for="publisherinp">Publisher</label>
+                        <input type="text" name="publisher" id="publisherinp" required>
+                        <label for="timeinp">Prep time</label>
+                        <input type="number" name="cooking_time" id="timeinp" step="1" required>
+                        <label for="servingsinp">Servings</label>
+                        <input type="number" name="servings" id="servingsinp" step="1" required>      
+                    </div>
+                    <div class="addingredients_container">
+                        <h2>Ingredients</h2>
+                        <label for="ingredient1inp">Ingredient 1</label>
+                        <input type="text" name="ingredients1" class="ingredients" id="ingredient1inp" placeholder="Format: Quantity,Unit,Description" required>
+                        <label for="ingredient2inp">Ingredient 2</label>
+                        <input type="text" name="ingredients2" class="ingredients" id="ingredient2inp" placeholder="Format: Quantity,Unit,Description" required>
+                        <label for="ingredient3inp">Ingredient 3</label>
+                        <input type="text" name="ingredients3" class="ingredients" id="ingredient3inp" placeholder="Format: Quantity,Unit,Description" required>
+                        <label for="ingredient4inp">Ingredient 4</label>
+                        <input type="text" name="ingredients4" class="ingredients" id="ingredient4inp" placeholder="Format: Quantity,Unit,Description" required>
+                        <label for="ingredient5inp">Ingredient 5</label>
+                        <input type="text" name="ingredients5" class="ingredients" id="ingredient5inp" placeholder="Format: Quantity,Unit,Description" required>
+                        <label for="ingredient6inp">Ingredient 6</label>
+                        <input type="text" name="ingredients6" class="ingredients" id="ingredient6inp" placeholder="Format: Quantity,Unit,Description" required>
+                    </div>
+                    <button type="submit" id="upload_btn">Upload</button>
+            </div>
+        </form>
+        <!--     
+        <ol id="recipeList">
+    
+        </ol> 
+        -->
+    
+    </div>
+</body>
+</html>
